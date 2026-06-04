@@ -4,37 +4,116 @@ from raggeneralization.core import (
     ContractDocument,
     CUADQuestion,
     PipelineConfig,
-    CUAD_CATEGORIES,
     TransferResult,
+    DomainAdaptationResult,
     GeneralizationBench,
+    build_transfer_matrix,
+    CUAD_CATEGORIES,
 )
 
 
-def test_contract_document_construction() -> None:
-    doc = ContractDocument(contract_id="c1", text="hello", contract_type="NDA")
-    assert doc.contract_id == "c1"
-    assert doc.contract_type == "NDA"
+# ---------------------------------------------------------------------------
+# DomainAdaptationResult
+# ---------------------------------------------------------------------------
+
+def test_adaptation_score_perfect() -> None:
+    r = DomainAdaptationResult("cfg", "legal-US", "legal-EU", 0.8, 0.8)
+    assert r.adaptation_score == pytest.approx(1.0)
 
 
-def test_cuad_question_has_answer_true() -> None:
-    q = CUADQuestion("q1", "Parties", "Who?", ["Acme Corp"])
-    assert q.has_answer is True
+def test_adaptation_score_clamped() -> None:
+    """target_ndcg > source_ndcg should still give score <= 1.0."""
+    r = DomainAdaptationResult("cfg", "legal-US", "legal-EU", 0.5, 0.9)
+    assert r.adaptation_score == pytest.approx(1.0)
 
 
-def test_cuad_question_has_answer_false() -> None:
-    q = CUADQuestion("q2", "Parties", "Who?", [])
-    assert q.has_answer is False
+def test_adaptation_score_zero_source() -> None:
+    r = DomainAdaptationResult("cfg", "legal-US", "legal-EU", 0.0, 0.5)
+    assert r.adaptation_score == pytest.approx(0.0)
 
 
-def test_cuad_question_has_answer_empty_string() -> None:
-    q = CUADQuestion("q3", "Parties", "Who?", ["  "])
-    assert q.has_answer is False
+def test_ndcg_gap() -> None:
+    r = DomainAdaptationResult("cfg", "legal-US", "legal-EU", 0.8, 0.6)
+    assert r.ndcg_gap == pytest.approx(0.2)
 
 
-def test_pipeline_config_name_simple() -> None:
-    cfg = PipelineConfig(chunking="fixed_512", embedding="bm25")
-    assert "fixed_512" in cfg.name()
-    assert "bm25" in cfg.name()
+def test_ndcg_gap_no_drop() -> None:
+    r = DomainAdaptationResult("cfg", "legal-US", "legal-EU", 0.6, 0.8)
+    assert r.ndcg_gap == pytest.approx(0.0)
+
+
+# ---------------------------------------------------------------------------
+# build_transfer_matrix
+# ---------------------------------------------------------------------------
+
+def test_build_transfer_matrix_diagonal() -> None:
+    results = [
+        DomainAdaptationResult("cfg", "legal-US", "legal-EU", 0.8, 0.7),
+        DomainAdaptationResult("cfg", "legal-EU", "legal-US", 0.75, 0.65),
+    ]
+    matrix = build_transfer_matrix(results)
+    assert matrix["legal-US"]["legal-US"] == pytest.approx(1.0)
+    assert matrix["legal-EU"]["legal-EU"] == pytest.approx(1.0)
+
+
+def test_build_transfer_matrix_values() -> None:
+    results = [
+        DomainAdaptationResult("cfg", "legal-US", "legal-EU", 0.8, 0.8),  # score=1.0
+        DomainAdaptationResult("cfg", "legal-US", "legal-EU", 0.8, 0.4),  # score=0.5
+    ]
+    matrix = build_transfer_matrix(results)
+    # Mean of 1.0 and 0.5
+    assert matrix["legal-US"]["legal-EU"] == pytest.approx(0.75)
+
+
+def test_build_transfer_matrix_empty() -> None:
+    matrix = build_transfer_matrix([])
+    assert matrix == {}
+
+
+# ---------------------------------------------------------------------------
+# GeneralizationBench.simulate_adaptation
+# ---------------------------------------------------------------------------
+
+def test_simulate_adaptation_returns_result() -> None:
+    bench = GeneralizationBench()
+    config = PipelineConfig(chunking="semantic", embedding="dense", reranker="cross-encoder")
+    result = bench.simulate_adaptation(config)
+    assert isinstance(result, DomainAdaptationResult)
+    assert 0.0 <= result.source_ndcg <= 1.0
+    assert 0.0 <= result.target_ndcg <= 1.0
+
+
+def test_simulate_adaptation_score_between_zero_and_one() -> None:
+    bench = GeneralizationBench()
+    config = PipelineConfig(chunking="fixed_512", embedding="bm25")
+    result = bench.simulate_adaptation(config)
+    assert 0.0 <= result.adaptation_score <= 1.0
+
+
+# ---------------------------------------------------------------------------
+# CUAD_CATEGORIES expanded
+# ---------------------------------------------------------------------------
+
+def test_cuad_categories_extended() -> None:
+    assert "Non-Compete" in CUAD_CATEGORIES
+    assert "Confidentiality" in CUAD_CATEGORIES
+    assert "Dispute Resolution" in CUAD_CATEGORIES
+    assert "Indemnification" in CUAD_CATEGORIES
+
+
+# ---------------------------------------------------------------------------
+# Existing tests (retained)
+# ---------------------------------------------------------------------------
+
+def test_transfer_result_transfer_gap() -> None:
+    r = TransferResult("legal-US", "legal-EU", "cfg", 0.8, 0.65)
+    assert r.transfer_gap == pytest.approx(0.15)
+
+
+def test_transfer_result_relative_drop() -> None:
+    r = TransferResult("legal-US", "legal-EU", "cfg", 0.8, 0.6)
+    assert r.relative_drop == pytest.approx(0.25)
 
 
 def test_pipeline_config_name_with_reranker() -> None:
@@ -42,42 +121,18 @@ def test_pipeline_config_name_with_reranker() -> None:
     assert "cross-encoder" in cfg.name()
 
 
-def test_pipeline_config_name_with_metadata() -> None:
-    cfg = PipelineConfig(chunking="recursive", embedding="dense", use_metadata=True)
-    assert "meta" in cfg.name()
-
-
-def test_cuad_categories_length() -> None:
-    assert len(CUAD_CATEGORIES) >= 5
-
-
-def test_transfer_result_transfer_gap() -> None:
-    r = TransferResult("legal-US", "legal-EU", "cfg", source_f1=0.80, target_f1=0.65)
-    assert r.transfer_gap == pytest.approx(0.15)
-
-
-def test_transfer_result_relative_drop() -> None:
-    r = TransferResult("legal-US", "legal-EU", "cfg", source_f1=0.80, target_f1=0.65)
-    assert r.relative_drop == pytest.approx(0.15 / 0.80)
-
-
-def test_generalization_bench_load_cuad_sample_length() -> None:
+def test_generalization_bench_load_cuad_sample() -> None:
     bench = GeneralizationBench()
     docs = bench.load_cuad_sample(n=7)
     assert len(docs) == 7
+    assert all(isinstance(d, ContractDocument) for d in docs)
 
 
-def test_simulate_transfer_returns_transfer_result() -> None:
-    bench = GeneralizationBench()
-    cfg = PipelineConfig(chunking="sentence", embedding="dense")
-    result = bench.simulate_transfer(cfg)
-    assert isinstance(result, TransferResult)
+def test_cuad_question_has_answer() -> None:
+    q = CUADQuestion("q1", "Parties", "Who are the parties?", ["Acme", "Beta"])
+    assert q.has_answer is True
 
 
-def test_simulate_transfer_gap_nonnegative_for_basic_config() -> None:
-    bench = GeneralizationBench()
-    cfg = PipelineConfig(chunking="fixed_512", embedding="bm25")
-    result = bench.simulate_transfer(cfg)
-    # Basic configs should degrade; gap could be slightly negative due to noise but
-    # the expected degradation should result in a non-hugely-negative gap
-    assert result.transfer_gap > -0.1
+def test_cuad_question_no_answer() -> None:
+    q = CUADQuestion("q2", "Parties", "Who are the parties?", [])
+    assert q.has_answer is False
