@@ -7,8 +7,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from raggeneralization.core import GeneralizationBench, PipelineConfig
-from raggeneralization.data import make_transfer_results
-from raggeneralization.evaluate import technique_generalization_report, rank_by_generalization
+from raggeneralization.evaluate import rank_by_generalization
 
 
 def main() -> None:
@@ -20,7 +19,6 @@ def main() -> None:
     for c in contracts[:3]:
         print(f"  {c.contract_id}: {c.contract_type} ({len(c.text)} chars)")
 
-    # Simulate transfer for several pipeline configs
     configs = [
         PipelineConfig("fixed_512", "bm25"),
         PipelineConfig("sentence", "dense"),

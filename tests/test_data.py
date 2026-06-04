@@ -1,5 +1,4 @@
 from __future__ import annotations
-import pytest
 from raggeneralization.data import (
     SAMPLE_CONTRACT_TEXTS,
     make_contract,
