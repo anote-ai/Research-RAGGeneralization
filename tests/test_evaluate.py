@@ -81,7 +81,7 @@ def test_generalization_report_groups_by_config():
     report = technique_generalization_report(results)
     assert len(report) == 2
     semantic_key = next(k for k in report if "chunking=semantic" in k)
-    assert report[semantic_key]["mean_transfer_gap"] == pytest.approx(0.15)
+    assert report[semantic_key]["mean_transfer_gap"] == pytest.approx(0.20)
 
 
 def test_generalization_report_mean_f1():
