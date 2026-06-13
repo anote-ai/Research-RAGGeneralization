@@ -1,4 +1,4 @@
-# RAGGeneralization
+# RAGGeneralization 
 
 > **Research question:** Do RAG pipelines trained/tuned on US legal contracts generalize to EU legal contracts, and which pipeline components (chunking, embedding, reranking, metadata) reduce domain transfer degradation?
 
