@@ -1,81 +1,95 @@
-# Which RAG Techniques Generalize? Legal Contract Retrieval over CUAD
+# RAGGeneralization 
 
-## Research Question
+> **Research question:** Do RAG pipelines trained/tuned on US legal contracts generalize to EU legal contracts, and which pipeline components (chunking, embedding, reranking, metadata) reduce domain transfer degradation?
 
-Does a high-performing RAG pipeline optimised for financial 10-K retrieval (FinanceBench) transfer to legal contract question answering (CUAD), and which pipeline components are responsible for domain-specific gains vs. general improvements?
+## Overview
 
-## CUAD Dataset Overview
+RAGGeneralization benchmarks domain transfer for RAG pipelines using the [CUAD](https://www.atticusprojectai.org/cuad) contract understanding dataset as a proxy. It measures F1 on span extraction tasks and quantifies the transfer gap when moving between source and target legal domains.
 
-[CUAD](https://huggingface.co/datasets/cuad) (Contract Understanding Atticus Dataset) contains 510 commercial legal contracts annotated with 41 question categories covering critical legal clauses. We evaluate on a representative subset of 5 categories:
+The full research vision (RAGGen-Bench, the Domain Gap Score / DGP, a silent-degradation
+detector, and an adaptation-strategy comparison across 10 domain pairs) is specified in
+[`DESIGN_DOC.md`](DESIGN_DOC.md). **What's implemented today is a smaller proof-of-concept
+slice of that vision** -- see the disclosure below and [`PAPER_DRAFT.md`](PAPER_DRAFT.md) /
+[`BLOG.md`](BLOG.md) for an explicit, section-by-section accounting of what is real vs.
+projected.
+
+## CUAD Overview
+
+CUAD contains 510 contracts with 13,000+ expert annotations across 41 legal clause categories. We use 8 key categories for our ablation:
 
 | Category | Description |
 |----------|-------------|
-| Parties | Names and roles of contracting entities |
-| Effective Date | When the contract takes effect |
-| Expiration Date | Contract end date or renewal conditions |
-| Governing Law | Jurisdiction that governs the agreement |
-| Termination for Convenience | Unilateral termination rights |
+| Parties | Contracting entities |
+| Effective Date | Agreement start date |
+| Expiration Date | Agreement end date |
+| Governing Law | Applicable jurisdiction |
+| Termination for Convenience | Unilateral exit clause |
+| Payment Terms | Compensation schedule |
+| Liability Cap | Maximum damages |
+| IP Ownership | Intellectual property assignment |
 
-## Transfer Result Table (Template)
+## Transfer Result Table
 
-| Technique | Finance F1 | Legal F1 | Gap (pp) | Generalises? |
-|-----------|------------|----------|----------|--------------|
-| Baseline (BM25 + fixed-512) | — | — | — | — |
-| + Sentence chunking | — | — | — | — |
-| + Cross-encoder reranking | — | — | — | — |
-| + LLM metadata injection | — | — | — | — |
-| + Query expansion | — | — | — | — |
-| Full pipeline | — | — | — | — |
+**Disclosure: these numbers are simulated, not measured.** They are produced by
+`GeneralizationBench.simulate_transfer` (see `src/raggeneralization/core.py`), which draws
+from a seeded `random.Random(hash(config_name))` combined with hand-picked
+`_CONFIG_DEGRADATION` constants calibrated to *look like* plausible RAG domain-transfer
+degradation. **No real CUAD dataset, no real embedding/retrieval models, and no real
+F1 evaluation were run to produce this table.** The underlying contract corpus is 7
+hand-written synthetic templates (`SAMPLE_CONTRACT_TEXTS` in `src/raggeneralization/data.py`),
+not the actual 510-contract CUAD dataset. Treat this table as an illustration of the
+intended shape of the result, not a research finding.
+
+| Pipeline Config | Source F1 | Target F1 | Transfer Gap | Relative Drop |
+|----------------|-----------|-----------|--------------|---------------|
+| fixed_512\|bm25 | 0.72 | 0.57 | 0.15 | 20.8% |
+| sentence\|dense | 0.71 | 0.59 | 0.12 | 16.9% |
+| recursive\|dense\|cross-encoder | 0.73 | 0.64 | 0.09 | 12.3% |
+| semantic\|dense\|cross-encoder\|meta | **0.74** | **0.68** | **0.06** | **8.1%** |
+
+*(These specific numbers are the simulation's deterministic output for these configs, not
+an empirical claim. Run `python scripts/run_demo.py` to reproduce them yourself.)*
 
 ## Generalization Findings
 
-Preliminary hypotheses (to be validated empirically):
+The bullet points below describe the *pattern the simulation was designed to produce*
+(reranking and metadata reduce simulated degradation by construction, via the
+`_CONFIG_DEGRADATION` multipliers), not an empirically observed finding:
 
-- **Chunking strategy** is expected to be domain-sensitive: sentence boundaries differ between financial prose and legal boilerplate.
-- **Cross-encoder reranking** is expected to generalise well due to its domain-agnostic ranking signal.
-- **LLM metadata annotation** may degrade on legal contracts if prompts were tuned for financial entities.
-- **Query expansion** is expected to show mixed results depending on terminology overlap.
+- Semantic chunking + cross-encoder reranking reduces simulated transfer gap by ~60% vs BM25 baseline
+- Metadata-aware retrieval (jurisdiction, document type) reduces simulated relative drop by construction
+- These directional hypotheses are plausible given the retrieval literature, but have not yet been validated against real CUAD data or real embedding models
+
+## Domain Gap Score (DGS)
+
+`src/raggeneralization/dgs.py` implements a real, runnable version of the Domain Gap Score
+from `DESIGN_DOC.md`: vocabulary-overlap (Jaccard) distance plus a dependency-free
+token-distribution-distance proxy for the design doc's embedding/Wasserstein-distance term.
+See `tests/test_dgs.py` for runnable tests, including a real (if small-scale) measurement
+over the existing synthetic contract templates. This is the first concrete code for the
+design doc's central predictive contribution; the DGP regression model itself, the
+silent-degradation detector, and the full 10-domain-pair RAGGen-Bench are not yet implemented
+(tracked as future work).
 
 ## Quickstart
 
 ```bash
-git clone https://github.com/anote-ai/research-raggeneralization.git
-cd research-raggeneralization
 pip install -e ".[dev]"
+python scripts/run_demo.py
 pytest tests/ -v
 ```
 
-```python
-from raggeneralization.core import PipelineConfig, GeneralizationBench
-from raggeneralization.evaluate import transfer_degradation
+## Target Venue
 
-config = PipelineConfig(
-    chunking="semantic",
-    embedding="text-embedding-3-large",
-    reranker="cross-encoder/ms-marco-MiniLM-L-6-v2",
-    use_metadata=True,
-)
-
-bench = GeneralizationBench()
-result = bench.evaluate_transfer(config)
-relative_drop = transfer_degradation(result.source_f1, result.target_f1)
-print(f"Transfer degradation: {relative_drop:.1%}")
-```
+- **EMNLP 2026 NLLP Workshop** -- Natural Legal Language Processing
 
 ## Citation
 
 ```bibtex
-@misc{raggeneralization2024,
-  title  = {Which RAG Techniques Generalize? Legal Contract Retrieval over CUAD},
-  author = {Anote AI Research},
-  year   = {2024},
-  url    = {https://github.com/anote-ai/research-raggeneralization},
-}
-
-@article{cuad2021,
-  title   = {CUAD: An Expert-Annotated NLP Dataset for Legal Contract Review},
-  author  = {Hendrycks, Dan and Burns, Collin and Chen, Anya and Ball, Spencer},
-  journal = {arXiv:2103.06268},
-  year    = {2021},
+@software{raggeneralization2026,
+  title  = {RAGGeneralization: Domain Transfer Evaluation for RAG on Contract Data},
+  author = {Anote AI},
+  year   = {2026},
+  url    = {https://github.com/anote-ai/research-raggeneralization}
 }
 ```
