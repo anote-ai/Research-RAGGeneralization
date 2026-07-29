@@ -2,9 +2,9 @@
 TULU LEGAL — MEGA PIPELINE (Full A-L Matrix x 3 Models)
 ================================================================================
 Consolidates every scattered script from this project into one stable,
-resumable pipeline. Runs all 17 condition-tier combinations (A, B, C_sparse,
+resumable pipeline. Runs all 19 condition-tier combinations (A, B, C_sparse,
 C_full, D_sparse, D_full, E_sparse, E_full, F, G, H, I, J, K_sparse, K_full,
-L_sparse, L_full) across three models, run in this order: Hex-1 (Ollama --
+L_sparse, L_full, M_sparse, M_full) across three models, run in this order: Hex-1 (Ollama --
 first, since it has the highest chance of crashing/collapsing, catching
 issues early), Sarvam (API -- second), Llama3 (Ollama -- last, most
 reliable, no reason to front-load it). 51 condition-runs total, ~1,020
@@ -93,7 +93,7 @@ def validate_categories_safe(top3):
 # CONFIG
 # ══════════════════════════════════════════════════════════════
 
-SARVAM_API_KEY = os.environ.get("SARVAM_API_KEY", "PASTE_YOUR_KEY_HERE")
+SARVAM_API_KEY = os.environ.get("SARVAM_API_KEY", "sk_pjuelwdd_YFcATIcYxOLcMF9EKHwNHRdm")
 SARVAM_MODEL = "sarvam-30b"
 HEX1_MODEL = "hf.co/prithivMLmods/hex-1-f32-GGUF:Q4_K_M"
 
@@ -109,7 +109,7 @@ DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "outputs")
 
 GLOSSARY_PATH = os.path.join(DATA_DIR, "tulu_priming_glossary_trilingual_v2.json")
-CONSOLIDATED_QUERIES_PATH = os.path.join(DATA_DIR, "tulu_legal_20_consolidated.jsonl")
+CONSOLIDATED_QUERIES_PATH = os.path.join(DATA_DIR, "tulu_legal_60_consolidated.jsonl")
 KANNADA_CORPUS_PATH = os.path.join(DATA_DIR, "kannada_legal_corpus_list.jsonl")
 
 # Every file the pipeline needs, checked BEFORE the slow embedding step --
@@ -134,9 +134,14 @@ RESUME_FROM = {
 
 SARVAM_MIN_GAP_SECONDS = 1.1  # 60 req/min limit -> 1/sec; small margin added
 
+# Run in 3 batches of 20 sentences each, all 19 conditions x 3 models per
+# batch, rather than all 60 at once -- if a long run gets interrupted,
+# whichever batches already finished are safe and independently usable.
+BATCHES = [(1, 20), (21, 40), (41, 60)]
+
 
 # ══════════════════════════════════════════════════════════════
-# CONDITION TABLE — single source of truth, 17 unique runs
+# CONDITION TABLE — single source of truth, 19 unique runs
 # ══════════════════════════════════════════════════════════════
 # (condition_id, script, priming_tier, use_rag)
 #   script: "english" | "romanized" | "kannada" | "tamil" | "malayalam"
@@ -160,6 +165,8 @@ CONDITIONS = [
     ("K_full",   "tamil",      "full",   False),
     ("L_sparse", "malayalam",  "sparse", False),
     ("L_full",   "malayalam",  "full",   False),
+    ("M_sparse", "romanized",  "sparse", False),  # new: completes the D/E,
+    ("M_full",   "romanized",  "full",   False),  # K, L pattern for Romanized
 ]
 
 SCRIPT_DISPLAY_NAME = {
@@ -203,14 +210,18 @@ def preflight_check():
         return False
 
     problems = []
-    for i in range(1, 21):
-        if i not in rows:
-            problems.append(f"id {i}: entire row missing")
-            continue
-        empty = [f for f in required_fields if not rows[i].get(f, "").strip()
-                  if f != "list_category_secondary"]
-        if empty:
-            problems.append(f"id {i}: missing fields {empty}")
+    if not rows:
+        problems.append("consolidated file contains zero rows")
+    else:
+        expected_ids = range(1, max(rows.keys()) + 1)  # dynamic -- works for 20, 60, or any future size
+        for i in expected_ids:
+            if i not in rows:
+                problems.append(f"id {i}: entire row missing (gap in id sequence)")
+                continue
+            empty = [f for f in required_fields if not rows[i].get(f, "").strip()
+                      if f != "list_category_secondary"]
+            if empty:
+                problems.append(f"id {i}: missing fields {empty}")
 
     if problems:
         print(f"  [FAIL] {len(problems)} problem(s) found:")
@@ -219,7 +230,7 @@ def preflight_check():
         print("\nABORTING before embedding -- fix the consolidated file first.")
         return False
 
-    print(f"  [OK] All 20 entries present with every required field populated.")
+    print(f"  [OK] All {len(rows)} entries present with every required field populated.")
     print("\nPre-flight check passed. Proceeding to embedding...\n")
     return True
 
@@ -319,7 +330,7 @@ def build_priming_block(glossary, script_key, tier):
 
 
 # ══════════════════════════════════════════════════════════════
-# UNIFIED PROMPT BUILDER — one source of truth for all 17 conditions
+# UNIFIED PROMPT BUILDER — one source of truth for all 19 conditions
 # ══════════════════════════════════════════════════════════════
 
 def build_situation_block(script, display_text, has_priming):
@@ -507,6 +518,15 @@ def call_sarvam(client, prompt, max_retries=7, delay_seconds=3, temperature=0.1)
                 messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
                 max_tokens=4000,
+                reasoning_effort=None,  # DISABLED -- diagnosed 2026-07-21: no-RAG
+                # conditions were failing 95% of the time vs. 42% with RAG present.
+                # All failures showed reasoning_content fallback text that never
+                # contained a parseable final answer -- reasoning was consuming the
+                # token budget before a formatted response was ever produced,
+                # worse when there was no retrieved content to anchor to. Disabling
+                # trades some "fairness" (vs. Llama3/Hex-1's free-form generation)
+                # for actually having usable data -- document this as a methods
+                # choice, not silently.
             )
             content = response.choices[0].message.content
             if not content:
@@ -529,9 +549,10 @@ def call_sarvam(client, prompt, max_retries=7, delay_seconds=3, temperature=0.1)
 # ══════════════════════════════════════════════════════════════
 
 def run_model(model_name, call_fn, queries, kannada_map, tamil_map, malayalam_map,
-              glossary, embedded_corpus, corpus_mean, resume_csv):
+              glossary, embedded_corpus, corpus_mean, resume_csv, batch_label=""):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_filename = os.path.join(OUTPUT_DIR, f"tulu_mega_{model_name}_{timestamp}.csv")
+    batch_suffix = f"_{batch_label}" if batch_label else ""
+    output_filename = os.path.join(OUTPUT_DIR, f"tulu_mega_{model_name}{batch_suffix}_{timestamp}.csv")
 
     completed = load_completed(resume_csv)
 
@@ -624,7 +645,7 @@ def main():
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    queries, kannada_map, tamil_map, malayalam_map = load_consolidated_queries()
+    all_queries, kannada_map, tamil_map, malayalam_map = load_consolidated_queries()
     glossary = load_glossary()
 
     print("\nLoading corpus and embedding (E5)...")
@@ -636,41 +657,63 @@ def main():
         corpus_mean = np.zeros_like(embedded_corpus[0]["embedding"])
         print("Mean-centering disabled (matches current pipeline config).")
 
-    all_model_results = {}
+    # Run in 3 batches of 20 -- if a long run gets interrupted, whichever
+    # batches already fully completed (across all 3 models) are safe and
+    # usable on their own, rather than needing the entire 60-sentence x
+    # 3-model run to finish in one sitting.
+    all_batch_results = {}
+    for batch_num, (lo, hi) in enumerate(BATCHES, start=1):
+        batch_queries = [q for q in all_queries if lo <= q["id"] <= hi]
+        batch_label = f"batch{batch_num}_ids{lo}-{hi}"
 
-    # ── SARVAM (first -- currently under active debugging, fastest to iterate on) ──
-    if SARVAM_API_KEY == "PASTE_YOUR_KEY_HERE":
-        print("\nSARVAM_API_KEY not set -- skipping Sarvam entirely.")
-    else:
-        client = get_sarvam_client()
-        sarvam_call_fn = lambda prompt: call_sarvam(client, prompt)
-        all_model_results["sarvam"], _ = run_model(
-            "sarvam", sarvam_call_fn, queries, kannada_map, tamil_map, malayalam_map,
-            glossary, embedded_corpus, corpus_mean, RESUME_FROM["sarvam"],
+        print(f"\n{'#'*80}\n# BATCH {batch_num} OF {len(BATCHES)} -- ids {lo}-{hi} "
+              f"({len(batch_queries)} queries x 19 conditions x 3 models)\n{'#'*80}")
+
+        batch_results = {}
+
+        # ── SARVAM (first -- currently under active debugging, fastest to iterate on) ──
+        if SARVAM_API_KEY == "PASTE_YOUR_KEY_HERE":
+            print("\nSARVAM_API_KEY not set -- skipping Sarvam entirely.")
+        else:
+            client = get_sarvam_client()
+            sarvam_call_fn = lambda prompt: call_sarvam(client, prompt)
+            batch_results["sarvam"], _ = run_model(
+                "sarvam", sarvam_call_fn, batch_queries, kannada_map, tamil_map, malayalam_map,
+                glossary, embedded_corpus, corpus_mean, RESUME_FROM["sarvam"],
+                batch_label=batch_label,
+            )
+
+        # ── HEX-1 (second) ──
+        batch_results["hex1"], _ = run_model(
+            "hex1", call_hex1, batch_queries, kannada_map, tamil_map, malayalam_map,
+            glossary, embedded_corpus, corpus_mean, RESUME_FROM["hex1"],
+            batch_label=batch_label,
         )
 
-    # ── HEX-1 (second) ──
-    all_model_results["hex1"], _ = run_model(
-        "hex1", call_hex1, queries, kannada_map, tamil_map, malayalam_map,
-        glossary, embedded_corpus, corpus_mean, RESUME_FROM["hex1"],
-    )
+        # ── LLAMA3 (last -- most reliable, no reason to front-load it) ──
+        batch_results["llama3"], _ = run_model(
+            "llama3", call_llama3, batch_queries, kannada_map, tamil_map, malayalam_map,
+            glossary, embedded_corpus, corpus_mean, RESUME_FROM["llama3"],
+            batch_label=batch_label,
+        )
 
-    # ── LLAMA3 (last -- most reliable, no reason to front-load it) ──
-    all_model_results["llama3"], _ = run_model(
-        "llama3", call_llama3, queries, kannada_map, tamil_map, malayalam_map,
-        glossary, embedded_corpus, corpus_mean, RESUME_FROM["llama3"],
-    )
+        all_batch_results[batch_label] = batch_results
 
-    # ── FINAL SUMMARY ──
-    print(f"\n{'='*80}\nFINAL COMPARISON — ALL CONDITIONS x ALL MODELS\n{'='*80}")
-    header = f"{'Condition':<12}" + "".join(f"{m:>12}" for m in all_model_results)
-    print(header)
-    for cond_id, _, _, _ in CONDITIONS:
-        row = f"{cond_id:<12}"
-        for m in all_model_results:
-            r = all_model_results[m].get(cond_id)
-            row += f"{r['hits1']:>11.1f}%" if r else f"{'--':>12}"
-        print(row)
+        print(f"\n{'='*70}\nBATCH {batch_num} OF {len(BATCHES)} COMPLETE (ids {lo}-{hi}) "
+              f"-- results saved, safe even if the run stops here.\n{'='*70}")
+
+    # ── FINAL SUMMARY -- combined across all batches ──
+    print(f"\n{'='*80}\nFINAL COMPARISON — ALL CONDITIONS x ALL MODELS x ALL BATCHES\n{'='*80}")
+    for batch_label, batch_results in all_batch_results.items():
+        print(f"\n--- {batch_label} ---")
+        header = f"{'Condition':<12}" + "".join(f"{m:>12}" for m in batch_results)
+        print(header)
+        for cond_id, _, _, _ in CONDITIONS:
+            row = f"{cond_id:<12}"
+            for m in batch_results:
+                r = batch_results[m].get(cond_id)
+                row += f"{r['hits1']:>11.1f}%" if r else f"{'--':>12}"
+            print(row)
 
 
 if __name__ == "__main__":

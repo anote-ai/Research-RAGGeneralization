@@ -24,14 +24,6 @@
     "romanized": "baale"
   },
   {
-    "kannada": "ಅಪ್ಪೆ",
-    "tamil": "அப்பெ",
-    "malayalam": "അപ്പെ",
-    "meaning": "mother",
-    "tier": "safe",
-    "romanized": "appe"
-  },
-  {
     "kannada": "ಮೀನ್",
     "tamil": "மீன்",
     "malayalam": "മീൻ",
@@ -51,7 +43,7 @@
     "kannada": "ಧನಿ",
     "tamil": "தனி",
     "malayalam": "ധനി",
-    "meaning": "employer",
+    "meaning": "landlord/employer (authority figure over you)",
     "tier": "leaky",
     "romanized": "dhani"
   },
@@ -80,12 +72,12 @@
     "romanized": "ille"
   },
   {
-    "kannada": "ಬೈಲಿ",
+    "kannada": "ಬೇಲಿ",
     "tamil": "பைலி",
     "malayalam": "ബൈലി",
     "meaning": "fence",
     "tier": "leaky",
-    "romanized": "bailee"
+    "romanized": "belee"
   },
   {
     "kannada": "ನೆರೆಕರೆ",
@@ -99,12 +91,12 @@
     "kannada": "ಪುದರ್",
     "tamil": "புதர்",
     "malayalam": "പുദർ",
-    "meaning": "name/signature",
+    "meaning": "name",
     "tier": "leaky",
     "romanized": "pudar"
   },
   {
-    "kannada": "ಕಾಗಜಿ",
+    "kannada": "ಕಾಕಜಿ",
     "tamil": "காகஜி",
     "malayalam": "കാഗജി",
     "meaning": "document",
@@ -128,7 +120,7 @@
     "romanized": "sala"
   },
   {
-    "kannada": "ಒಪ್ಪಿಗೆ",
+    "kannada": "ಓಪ್ಪಿಗೆ",
     "tamil": "ஒப்பிகெ",
     "malayalam": "ഒപ്പിഗെ",
     "meaning": "permission",
@@ -144,12 +136,12 @@
     "romanized": "popini"
   },
   {
-    "kannada": "ಮಲ್ತುನಿ",
-    "tamil": "மல்துனி",
-    "malayalam": "മൽതുനി",
+    "kannada": "ಮಲ್ಪುನಿ",
+    "tamil": "மல்புனி",
+    "malayalam": "മല്പുനി",
     "meaning": "to do/make",
     "tier": "safe",
-    "romanized": "maltuni"
+    "romanized": "malpuni"
   },
   {
     "kannada": "ಕೊರ್ಪುನಿ",
@@ -184,12 +176,12 @@
     "romanized": "wapas"
   },
   {
-    "kannada": "ಮುಗಿ",
+    "kannada": "ಮುಗ್ಪಾವುನಿ",
     "tamil": "முகி",
     "malayalam": "മുഗി",
     "meaning": "to end/finish",
     "tier": "safe",
-    "romanized": "mugi"
+    "romanized": "mugpavuni"
   },
   {
     "kannada": "ಇಜ್ಜಿ",
@@ -248,11 +240,19 @@
     "romanized": "undu"
   },
   {
-    "kannada": "ಅಮ್ಮೆ",
-    "tamil": "அம்மெ",
-    "malayalam": "അമ്മെ",
-    "meaning": "father",
+    "kannada": "ಅಮ್ಮ",
+    "tamil": "அம்ம",
+    "malayalam": "അമ്മ",
+    "meaning": "mother",
     "tier": "safe",
-    "romanized": "amme"
+    "romanized": "amma"
+  },
+  {
+    "kannada": "ದಸ್ಕತ್",
+    "tamil": "த³ஸ்கத்",
+    "malayalam": "ദസ്കത്",
+    "meaning": "signature",
+    "tier": "leaky",
+    "romanized": "daskat"
   }
 ]
