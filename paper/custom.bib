@@ -1,0 +1,284 @@
+% ============================================================
+% custom.bib — MinPrompt-Legal Related Work references
+% Corrected/completed pass: all author lists verified via arXiv/ACL
+% Anthology/publisher pages; 6 previously-missing entries added.
+% ============================================================
+% [AUDIT PASS] Canonical published-venue citations applied per the
+% 17-reference audit (Anthology DOIs, publisher DOIs, and
+% proceedings/OpenReview URLs swapped in for arXiv-only links where a
+% formal venue exists). Entries not covered by the audit
+% (mohan2026retrieval, sarvamai_models) are unchanged.
+% ============================================================
+
+@inproceedings{longpre2021entity,
+  title     = {Entity-Based Knowledge Conflicts in Question Answering},
+  author    = {Longpre, Shayne and Perisetla, Kartik and Chen, Anthony and Ramesh, Nikhil and DuBois, Chris and Singh, Sameer},
+  booktitle = {Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year      = {2021},
+  pages     = {7052--7063},
+  doi       = {10.18653/v1/2021.emnlp-main.565},
+  url       = {https://aclanthology.org/2021.emnlp-main.565/}
+}
+
+@inproceedings{xu2024knowledge,
+  title     = {Knowledge Conflicts for LLMs: A Survey},
+  author    = {Xu, Rongwu and Qi, Zehan and Guo, Zhijiang and Wang, Cunxiang and Wang, Hongru and Zhang, Yue and Xu, Wei},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year      = {2024},
+  pages     = {8541--8565},
+  address   = {Miami, Florida},
+  doi       = {10.18653/v1/2024.emnlp-main.486},
+  url       = {https://aclanthology.org/2024.emnlp-main.486/}
+}
+
+% [AUDIT] Canonical identifier is the NeurIPS 2024 Datasets & Benchmarks
+% Track proceedings page (OpenReview forum WGoCZl2itU); NeurIPS
+% proceedings carry no DOI, so eprint is retained as a convenience link
+% only, not as the primary identifier.
+@inproceedings{wu2024clasheval,
+  title     = {ClashEval: Quantifying the Tug-of-War Between an {LLM's} Internal Prior and External Evidence},
+  author    = {Wu, Kevin and Wu, Eric and Zou, James},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track},
+  year      = {2024},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2024/hash/3aa291abc426d7a29fb08418c1244177-Abstract-Datasets_and_Benchmarks_Track.html},
+  eprint    = {2404.10198},
+  archivePrefix = {arXiv}
+}
+
+% [AUDIT] ICLR 2024 (Spotlight). No DOI is assigned (dblp confirms
+% none); OpenReview is the canonical identifier. Underlying arXiv ID
+% retained per audit note.
+@inproceedings{xie2024adaptive,
+  title     = {Adaptive Chameleon or Stubborn Sloth: Revealing the Behavior of Large Language Models in Knowledge Conflicts},
+  author    = {Xie, Jian and Zhang, Kai and Chen, Jiangjie and Lou, Renze and Su, Yu},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024},
+  note      = {Spotlight},
+  url       = {https://openreview.net/forum?id=auKAUJZMO6},
+  eprint    = {2305.13300},
+  archivePrefix = {arXiv}
+}
+
+% [AUDIT - MAJOR] Not an arXiv-only preprint: formally published,
+% peer-reviewed, at ICML 2025 (PMLR does not mint DOIs, so the
+% proceedings URL is canonical). Retitled from the arXiv version
+% ("...Retrieval Augmented Generation Systems") to the published title
+% ("...Scalable and Stable RAG Systems"); year updated 2024 -> 2025 to
+% match the ICML publication (bibkey left as hsia2024ragged to avoid
+% touching \citep calls in the .tex). The earlier NeurIPS 2024
+% "Adaptive Foundation Models" workshop appearance is non-archival and
+% is not used as the citation.
+@inproceedings{hsia2024ragged,
+  title     = {{RAGGED}: Towards Informed Design of Scalable and Stable {RAG} Systems},
+  author    = {Hsia, Jennifer and Shaikh, Afreen and Wang, Zhiruo and Neubig, Graham},
+  booktitle = {Proceedings of the 42nd International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {267},
+  pages     = {24139--24155},
+  year      = {2025},
+  url       = {https://proceedings.mlr.press/v267/hsia25a.html}
+}
+
+% [AUDIT] Accepted NeurIPS 2025; formal camera-ready proceedings page
+% not yet posted as of the audit cutoff, so the NeurIPS 2025 poster
+% page is the best available canonical link (upgrade to the archival
+% proceedings link once posted). arXiv retained as fallback.
+@inproceedings{zeng2025ragguard,
+  title     = {Worse than Zero-shot? A Fact-Checking Dataset for Evaluating the Robustness of {RAG} Against Misleading Retrievals},
+  author    = {Zeng, Linda and Gupta, Rithwik and Motwani, Divij and Yang, Diji and Zhang, Yi},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2025},
+  url       = {https://neurips.cc/virtual/2025/poster/121659},
+  eprint    = {2502.16101},
+  archivePrefix = {arXiv}
+}
+
+% [AUDIT] Volume 22, Issue 2 (June 2025) -- issue number corrected
+% from 1 to 2. Wiley DOI is canonical; not in ACL Anthology.
+@article{magesh2025hallucination,
+  title   = {Hallucination-Free? Assessing the Reliability of Leading {AI} Legal Research Tools},
+  author  = {Magesh, Varun and Surani, Faiz and Dahl, Matthew and Suzgun, Mirac and Manning, Christopher D. and Ho, Daniel E.},
+  journal = {Journal of Empirical Legal Studies},
+  volume  = {22},
+  number  = {2},
+  pages   = {216--242},
+  year    = {2025},
+  doi     = {10.1111/jels.12413},
+  url     = {https://onlinelibrary.wiley.com/doi/full/10.1111/jels.12413}
+}
+
+% [AUDIT] NLLP Workshop 2025, co-located with EMNLP 2025, Suzhou,
+% China. ACL Anthology DOI replaces the arXiv link.
+@inproceedings{reuter2025towards,
+  title     = {Towards Reliable Retrieval in {RAG} Systems for Large Legal Datasets},
+  author    = {Reuter, Markus and Lingenberg, Tobias and Liepi{\c{n}}a, R{\=u}ta and Lagioia, Francesca and Lippi, Marco and Sartor, Giovanni and Passerini, Andrea and Sayin, Burcu},
+  booktitle = {Proceedings of the Natural Legal Language Processing Workshop (NLLP)},
+  year      = {2025},
+  pages     = {17--30},
+  address   = {Suzhou, China},
+  doi       = {10.18653/v1/2025.nllp-1.3},
+  url       = {https://aclanthology.org/2025.nllp-1.3/}
+}
+
+% [AUDIT] AAAI-26 Technical Tracks, Vol. 40 No. 39, pages 33135-33143.
+% Not in ACL Anthology; AAAI DOI is canonical. arXiv retained as
+% convenience link.
+@inproceedings{sun2026exposing,
+  title     = {Exposing the Cracks: Vulnerabilities of Retrieval-Augmented {LLM}-based Machine Translation},
+  author    = {Sun, Yanming and Zhan, Runzhe and Cheang, Chi Seng and Wu, Han and Liu, Xuebo and Niu, Yuyao and Ye, Fengying and Lan, Kaixin and Chao, Lidia S. and Wong, Derek F.},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {40},
+  number    = {39},
+  pages     = {33135--33143},
+  year      = {2026},
+  doi       = {10.1609/aaai.v40i39.40597},
+  url       = {https://ojs.aaai.org/index.php/AAAI/article/view/40597},
+  eprint    = {2510.00829},
+  archivePrefix = {arXiv}
+}
+
+% [AUDIT] NAACL 2025, Volume 1: Long Papers, pages 1525-1542,
+% Albuquerque, New Mexico, ISBN 979-8-89176-189-6. ACL Anthology DOI
+% replaces the arXiv link.
+@inproceedings{hu2025crosslingual,
+  title     = {Large Language Models Are Cross-Lingual Knowledge-Free Reasoners},
+  author    = {Hu, Peng and Liu, Sizhe and Gao, Changjiang and Huang, Xin and Han, Xue and Feng, Junlan and Deng, Chao and Huang, Shujian},
+  booktitle = {Proceedings of the North American Chapter of the Association for Computational Linguistics (NAACL)},
+  year      = {2025},
+  pages     = {1525--1542},
+  address   = {Albuquerque, New Mexico},
+  doi       = {10.18653/v1/2025.naacl-long.72},
+  url       = {https://aclanthology.org/2025.naacl-long.72/}
+}
+
+% [AUDIT] 5th Workshop on Multilingual Representation Learning (MRL
+% 2025), pages 199-225, Suzhou, China, Nov 8-9 2025, ISBN
+% 979-8-89176-345-6. Best Paper Award. ACL Anthology DOI replaces the
+% arXiv link.
+@inproceedings{qi2025consistency,
+  title     = {On the Consistency of Multilingual Context Utilization in {RAG}},
+  author    = {Qi, Jirui and Fern{\'a}ndez, Raquel and Bisazza, Arianna},
+  booktitle = {Proceedings of the 5th Workshop on Multilingual Representation Learning (MRL)},
+  year      = {2025},
+  pages     = {199--225},
+  address   = {Suzhou, China},
+  note      = {Best Paper Award},
+  doi       = {10.18653/v1/2025.mrl-main.15},
+  url       = {https://aclanthology.org/2025.mrl-main.15/}
+}
+
+% [FIXED] full 6-author list confirmed via ACL Anthology 2026.mellm-1.9
+% Not covered by the 17-reference audit; left unchanged.
+@inproceedings{mohan2026retrieval,
+  title     = {When Retrieval Hurts: Evidence Utilization, Script Fidelity, and Knowledge Conflicts in Multilingual {RAG}},
+  author    = {Mohan, Varalekshmy M and Jayakumar, Swathi and Menon, Gadha Saji and Kurup, Sachin and G, Veena and Kanjirangat, Vani},
+  booktitle = {Proceedings of the 1st Workshop on Multilinguality in the Era of Large Language Models (MeLLM)},
+  year      = {2026},
+  pages     = {92--107},
+  address   = {San Diego, United States}
+}
+
+% [AUDIT] LREC-COLING 2024, pages 1756-1767, Torino, Italia, ELRA and
+% ICCL. This ELRA-run volume mints no DOI; the Anthology URL replaces
+% the arXiv link as the stable identifier.
+% [FIXED - MAJOR, retained from prior pass] The paper at
+% arXiv:2403.19142 is NOT authored by "Madasamy, Kishore Kumar and
+% Kumaresan, Prasanna Kumar" -- its real authors are Manu Narayanan and
+% No\"emi Aepli. "Madasamy et al." is a real name in Tulu NLP (a 2022
+% DravidianLangTech shared-task paper) but is NOT the author of this
+% arXiv ID / this title. Flagging for your review since this is a
+% different paper than what was likely intended -- confirm this is
+% still the citation you want before submission, or swap in the correct
+% Madasamy et al. 2022 reference if that was the intended source.
+@inproceedings{madasamy2024tulu,
+  title     = {A Tulu Resource for Machine Translation},
+  author    = {Narayanan, Manu and Aepli, No{\"e}mi},
+  booktitle = {Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation (LREC-COLING)},
+  year      = {2024},
+  pages     = {1756--1767},
+  address   = {Torino, Italia},
+  publisher = {ELRA and ICCL},
+  url       = {https://aclanthology.org/2024.lrec-main.155/}
+}
+
+% [FIXED] Correct given names are Prathamesh Devadiga and Paras Chopra
+% (previously listed as "Vinay Devadiga" and "Deepa Chopra").
+% [AUDIT] LoResLM 2026, Rabat, Morocco, pages 50-61. ACL Anthology DOI
+% replaces the arXiv link.
+@inproceedings{devadiga2026making,
+  title     = {Making Large Language Models Speak Tulu: Structured Prompting for an Extremely Low-Resource Language},
+  author    = {Devadiga, Prathamesh and Chopra, Paras},
+  booktitle = {Proceedings of the Second Workshop on Language Models for Low-Resource Languages (LoResLM)},
+  year      = {2026},
+  pages     = {50--61},
+  address   = {Rabat, Morocco},
+  doi       = {10.18653/v1/2026.loreslm-1.5},
+  url       = {https://aclanthology.org/2026.loreslm-1.5/}
+}
+
+% ============================================================
+% Previously missing (6) -- added below
+% ============================================================
+
+% [AUDIT] SSRN working paper (dated March 10, 2026). Not in ACL
+% Anthology; SSRN DOI is the canonical identifier.
+@misc{stanfordlegaldesignlab_list,
+  title        = {You Say Potato, We Say Legal Issue: Developing the Legal Issues Taxonomy (LIST) for Smarter Issue-Spotting and Access to Justice Infrastructure},
+  author       = {Hagan, Margaret},
+  howpublished = {SSRN},
+  year         = {2026},
+  doi          = {10.2139/ssrn.6388659},
+  note         = {Available at SSRN: https://ssrn.com/abstract=6388659}
+}
+
+% [AUDIT] RESOURCEFUL-2025 (Third Workshop on Resources and
+% Representations for Under-Resourced Languages and Domains), pages
+% 38-47, Tallinn, Estonia, University of Tartu Library, ISBN
+% 978-9908-53-121-2. This volume carries no 10.18653 DOI (not an
+% ACL-run venue), so the Anthology URL replaces the arXiv link as the
+% stable identifier.
+@inproceedings{kanerva2025ocr,
+  title     = {{OCR} Error Post-Correction with {LLMs} in Historical Documents: No Free Lunches},
+  author    = {Kanerva, Jenna and Ledins, Cassandra and K{\"a}pyaho, Siiri and Ginter, Filip},
+  booktitle = {Proceedings of the Third Workshop on Resources and Representations for Under-Resourced Languages and Domains (RESOURCEFUL)},
+  year      = {2025},
+  pages     = {38--47},
+  address   = {Tallinn, Estonia},
+  publisher = {University of Tartu Library},
+  url       = {https://aclanthology.org/2025.resourceful-1.8/}
+}
+
+% [AUDIT] No peer-reviewed venue found; Meta technical report
+% circulated only as an arXiv preprint. Retained as-is.
+@misc{meta2024llama3,
+  title  = {The Llama 3 Herd of Models},
+  author = {{AI@Meta}},
+  year   = {2024},
+  eprint = {2407.21783},
+  archivePrefix = {arXiv}
+}
+
+% Not covered by the 17-reference audit; left unchanged.
+@misc{sarvamai_models,
+  title        = {Sarvam-1: A Small Yet Powerful {LLM} for Indic Languages},
+  author       = {{Sarvam AI}},
+  year         = {2024},
+  howpublished = {\url{https://www.sarvam.ai/blogs/sarvam-1}}
+}
+
+% [AUDIT] Company blog post, not an academic paper. Retained as-is.
+@misc{budecosystem2025hex1,
+  title        = {Introducing Hex-1: A Fully Open-Source {LLM} for Indic Languages},
+  author       = {{Bud Ecosystem}},
+  year         = {2025},
+  howpublished = {\url{https://blog.budecosystem.com/hex1-open-source-llm-for-indic-languages/}}
+}
+
+% [AUDIT] News article; needs no formal-venue lookup. Retained as-is.
+@misc{google2024geminiindia,
+  title        = {Google's Gemini {AI} App Now Available in India, Supports 9 Languages},
+  author       = {{Deccan Herald}},
+  year         = {2024},
+  howpublished = {\url{https://www.deccanherald.com/technology/googles-gemini-ai-app-now-available-in-india-supports-9-languages-3070891}},
+  note         = {Confirms official Kannada support; cited as a news source, not a Google primary document}
+}

@@ -1,0 +1,258 @@
+[
+  {
+    "kannada": "ಆಂಜೊ",
+    "tamil": "ஆஞ்ஜொ",
+    "malayalam": "ആഞ്ജൊ",
+    "meaning": "man",
+    "tier": "safe",
+    "romanized": "aanjo"
+  },
+  {
+    "kannada": "ಆಲ್",
+    "tamil": "ஆல்",
+    "malayalam": "ആൽ",
+    "meaning": "she",
+    "tier": "safe",
+    "romanized": "al"
+  },
+  {
+    "kannada": "ಬಾಲೆ",
+    "tamil": "பாலெ",
+    "malayalam": "ബാലെ",
+    "meaning": "child",
+    "tier": "safe",
+    "romanized": "baale"
+  },
+  {
+    "kannada": "ಮೀನ್",
+    "tamil": "மீன்",
+    "malayalam": "മീൻ",
+    "meaning": "fish",
+    "tier": "safe",
+    "romanized": "meen"
+  },
+  {
+    "kannada": "ಯಜಮಾನ",
+    "tamil": "யஜமான",
+    "malayalam": "യജമാന",
+    "meaning": "landlord/owner",
+    "tier": "leaky",
+    "romanized": "yejamaana"
+  },
+  {
+    "kannada": "ಧನಿ",
+    "tamil": "தனி",
+    "malayalam": "ധനി",
+    "meaning": "landlord/employer (authority figure over you)",
+    "tier": "leaky",
+    "romanized": "dhani"
+  },
+  {
+    "kannada": "ಕಾಸು",
+    "tamil": "காஸு",
+    "malayalam": "കാസു",
+    "meaning": "money",
+    "tier": "leaky",
+    "romanized": "kas"
+  },
+  {
+    "kannada": "ಜಾಗ",
+    "tamil": "ஜாக",
+    "malayalam": "ജാഗ",
+    "meaning": "land",
+    "tier": "leaky",
+    "romanized": "jagga"
+  },
+  {
+    "kannada": "ಇಲ್ಲ್",
+    "tamil": "இல்ல்",
+    "malayalam": "ഇല്ല്",
+    "meaning": "house",
+    "tier": "leaky",
+    "romanized": "ille"
+  },
+  {
+    "kannada": "ಬೇಲಿ",
+    "tamil": "பைலி",
+    "malayalam": "ബൈലി",
+    "meaning": "fence",
+    "tier": "leaky",
+    "romanized": "belee"
+  },
+  {
+    "kannada": "ನೆರೆಕರೆ",
+    "tamil": "நெரெகரெ",
+    "malayalam": "നെരെകരെ",
+    "meaning": "neighbor",
+    "tier": "leaky",
+    "romanized": "nerakare"
+  },
+  {
+    "kannada": "ಪುದರ್",
+    "tamil": "புதர்",
+    "malayalam": "പുദർ",
+    "meaning": "name",
+    "tier": "leaky",
+    "romanized": "pudar"
+  },
+  {
+    "kannada": "ಕಾಕಜಿ",
+    "tamil": "காகஜி",
+    "malayalam": "കാഗജി",
+    "meaning": "document",
+    "tier": "leaky",
+    "romanized": "kakaji"
+  },
+  {
+    "kannada": "ಕುಟುಂಬ",
+    "tamil": "குடும்ப",
+    "malayalam": "കുടുംബ",
+    "meaning": "family",
+    "tier": "leaky",
+    "romanized": "kotumba"
+  },
+  {
+    "kannada": "ಸಾಲ",
+    "tamil": "ஸால",
+    "malayalam": "സാല",
+    "meaning": "loan/debt",
+    "tier": "leaky",
+    "romanized": "sala"
+  },
+  {
+    "kannada": "ಓಪ್ಪಿಗೆ",
+    "tamil": "ஒப்பிகெ",
+    "malayalam": "ഒപ്പിഗെ",
+    "meaning": "permission",
+    "tier": "leaky",
+    "romanized": "oppigay"
+  },
+  {
+    "kannada": "ಪೋಪಿನಿ",
+    "tamil": "போபினி",
+    "malayalam": "പോപിനി",
+    "meaning": "to go",
+    "tier": "safe",
+    "romanized": "popini"
+  },
+  {
+    "kannada": "ಮಲ್ಪುನಿ",
+    "tamil": "மல்புனி",
+    "malayalam": "മല്പുനി",
+    "meaning": "to do/make",
+    "tier": "safe",
+    "romanized": "malpuni"
+  },
+  {
+    "kannada": "ಕೊರ್ಪುನಿ",
+    "tamil": "கொர்புனி",
+    "malayalam": "കൊർപുനി",
+    "meaning": "to give",
+    "tier": "safe",
+    "romanized": "korpuni"
+  },
+  {
+    "kannada": "ಗೊತ್ತು",
+    "tamil": "கொத்து",
+    "malayalam": "ഗൊത്തു",
+    "meaning": "to know",
+    "tier": "safe",
+    "romanized": "gothu"
+  },
+  {
+    "kannada": "ಬೋಡು",
+    "tamil": "போடு",
+    "malayalam": "ബോഡു",
+    "meaning": "to want",
+    "tier": "safe",
+    "romanized": "bodu"
+  },
+  {
+    "kannada": "ವಾಪಸ್",
+    "tamil": "வாபஸ்",
+    "malayalam": "വാപസ്",
+    "meaning": "return/back",
+    "tier": "safe",
+    "romanized": "wapas"
+  },
+  {
+    "kannada": "ಮುಗ್ಪಾವುನಿ",
+    "tamil": "முகி",
+    "malayalam": "മുഗി",
+    "meaning": "to end/finish",
+    "tier": "safe",
+    "romanized": "mugpavuni"
+  },
+  {
+    "kannada": "ಇಜ್ಜಿ",
+    "tamil": "இஜ்ஜி",
+    "malayalam": "ഇജ്ജി",
+    "meaning": "negation(not)",
+    "tier": "safe",
+    "romanized": "ijji"
+  },
+  {
+    "kannada": "ಅತ್ತ್",
+    "tamil": "அத்த்",
+    "malayalam": "അത്ത്",
+    "meaning": "negative",
+    "tier": "safe",
+    "romanized": "att"
+  },
+  {
+    "kannada": "ಬೊಕ್ಕ",
+    "tamil": "பொக்க",
+    "malayalam": "ബൊക്ക",
+    "meaning": "after",
+    "tier": "safe",
+    "romanized": "boca"
+  },
+  {
+    "kannada": "ದುಂಬು",
+    "tamil": "தும்பு",
+    "malayalam": "ദുംബു",
+    "meaning": "before",
+    "tier": "safe",
+    "romanized": "dumbu"
+  },
+  {
+    "kannada": "ಮಾತ್ರ",
+    "tamil": "மாத்ர",
+    "malayalam": "മാത്ര",
+    "meaning": "but/contrast",
+    "tier": "safe",
+    "romanized": "matra"
+  },
+  {
+    "kannada": "ಪಂಡ",
+    "tamil": "பண்ட",
+    "malayalam": "പണ്ഡ",
+    "meaning": "quotative(THAT)",
+    "tier": "safe",
+    "romanized": "panda"
+  },
+  {
+    "kannada": "ಉಂಡು",
+    "tamil": "உண்டு",
+    "malayalam": "ഉണ്ഡു",
+    "meaning": "exists/is",
+    "tier": "safe",
+    "romanized": "undu"
+  },
+  {
+    "kannada": "ಅಮ್ಮ",
+    "tamil": "அம்ம",
+    "malayalam": "അമ്മ",
+    "meaning": "mother",
+    "tier": "safe",
+    "romanized": "amma"
+  },
+  {
+    "kannada": "ದಸ್ಕತ್",
+    "tamil": "த³ஸ்கத்",
+    "malayalam": "ദസ്കത്",
+    "meaning": "signature",
+    "tier": "leaky",
+    "romanized": "daskat"
+  }
+]
