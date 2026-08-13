@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 
-\usepackage[review]{acl}
+\usepackage{acl}
 \usepackage{latexsym}
 \usepackage{microtype}
 \usepackage{xurl}  % lets long bibliography URLs (e.g. the Gemini blog link)
@@ -20,13 +20,17 @@
 \usepackage{multirow}
 
 
-\setmainfont{TeX Gyre Termes}
+\setmainfont{NimbusRoman-Regular-renamed.otf}[
+  BoldFont       = NimbusRoman-Bold-renamed.otf,
+  ItalicFont     = NimbusRoman-Italic-renamed.otf,
+  BoldItalicFont = NimbusRoman-BoldItalic-renamed.otf,
+]
 \newfontfamily\kannadafont{NotoSansKannada.ttf}
 
 
 \title{Cross Lingual Transfer in Tulu Legal Comprehension: Script-Dependent Improvement and RAG-Induced Knowledge Conflict}
 
-\author{Anonymous ACL submission}
+\author{Sindhu Shetty, Spurthi Setty, Natan Vidra}
 
 \begin{document}
 \maketitle
@@ -167,7 +171,7 @@ After the discovery of RAG hurting a model's discernment, a tentative prototype 
 
 Across all three models, Kannada-script bare comprehension (Condition\ H) is significantly above both chance and majority-class baselines (Llama3 46.7\%, Hex-1 41.7\%, Sarvam 48.3\%; $p<.001$ in every case), and full-tier priming reveals a trend with comprehension being increased further for every model, when using Kannada (Figure~\ref{fig:findings-condensed}). The picture changes sharply once RAG is introduced. For Llama3, RAG collapses performance well below its own no-RAG ceiling (D\_full 23.3\% vs.\ E\_full 60.0\%, $p<.001$); Hex-1 and Sarvam show no significant degradation on the same comparison ($p=.20$ and $p=.57$, respectively). The full 19-condition, four-script, three-model breakdown and complete significance tests are reported in Appendix~\ref{app:full-findings}.
 
-The one RAG-related effect that generalizes across all three models is query language: English-gloss queries under RAG (Condition A) significantly outperform Kannada-script Tulu queries under otherwise identical retrieval (Condition D), for every model (p < .001 in all six comparisons; Figure \ref{fig:query-lang-rag}). A full comparison of Kannada and Romanized script performance across all priming and RAG conditions is reported in Table ~\ref{tab:kannada-romanized}. This suggests that whatever degrades performance under RAG interacts more consistently with query language than with model identity.
+The one RAG-related effect that generalizes across all three models is query language: English-gloss queries under RAG (Condition A) significantly outperform Kannada-script Tulu queries under otherwise identical retrieval (Condition D/Full), for every model (p < .001 in all three comparisons; Figure \ref{fig:query-lang-rag}). A full comparison of Kannada and Romanized script performance across all priming and RAG conditions is reported in Table ~\ref{tab:kannada-romanized}. This suggests that whatever degrades performance under RAG interacts more consistently with query language than with model identity.
 
 \section{Discussion}
 
@@ -224,7 +228,7 @@ One pressing finding was the repeatable success of Condition\ E. This trend emer
 ``Someone is living on my land without asking and won't leave'' & ``...classic housing/trespass issue.'' \\
 \bottomrule
 \end{tabular}
-\caption{Sarvam, Condition H, ids 14 and 17. Row 1: gold and predicted category both Courts/Legal-System, reasoning names the specific recognized term rather than a generic paraphrase. Row 2: gold Land/Property, predicted Housing (gold recovered at rank 3) — the model parses the core action but assigns an adjacent category, indicating partial rather than absent comprehension.}
+\caption{Sarvam, Condition H, ids 14 and 17. Row 1: human chosen and predicted category both Courts/Legal-System, reasoning names the specific recognized term rather than a generic paraphrase. Row 2: human chosen - Land/Property, predicted - Housing. The model parses the core action but assigns an adjacent category, indicating partial rather than absent comprehension.}
 \label{tab:h-examples}
 \end{table}
 
@@ -254,7 +258,7 @@ A model's garbled post-RAG responses fell into two categories: fact substitution
 Methodological note: retrieved passages were shown to the model together with their own source category label. A follow-up ablation stripping this label from the retrieved context produced no consistent change in accuracy (deltas within $\pm$5pp across all five RAG conditions, no consistent direction), indicating label-copying was not the primary driver of the collapse; the failure is substantially content-level, not a result of label exposure.
 
 \subsection{Relation of RAG Inclusion and Script Across Model Performance}
-While the independent effects of RAG inclusion and script have been stated, the intersection between the two highlights a possible relation - primarily evident between Kannada script and Latin script queries. With non-RAG conditions, Kannada script significantly outperformed Latin script across almost all model and condition combinations Table~\ref{tab:kannada-romanized}, lending more credence to the discussion present in \S\ref{subsec:comprehension_transfer}. Models can and do exhibit comprehension of low resource languages that they had previously never encountered, but the inclusion of Latin script adds a complicating factor - that models struggle to parse queries in a low-resource language if the script the language is written in is far removed from related languages in the model's training base (though comprehension can still exist). 
+While the independent effects of RAG inclusion and script have been stated, the intersection between the two highlights a possible relation - primarily evident between Kannada script and Latin script queries. With non-RAG conditions, Kannada script significantly outperformed Latin script across majority of model and condition combinations Table~\ref{tab:kannada-romanized}, lending more credence to the discussion present in \S\ref{subsec:comprehension_transfer}. Models can and do exhibit comprehension of low resource languages that they had previously never encountered, but the inclusion of Latin script adds a complicating factor - that models struggle to parse queries in a low-resource language if the script the language is written in is far removed from related languages in the model's training base (though comprehension can still exist). 
 
 However, this difference in comprehension between script is not universally present with RAG inclusion. Sarvam and Hex-1 - both models that upheld performance with RAG inclusion (with comparison between D and E conditions)- were also models that could maintain the Kannada script advantage with RAG conditions (across Conditions C and D in Table~\ref{tab:kannada-romanized}). Llama3 - the model in which accuracy decreased (Condition D vs E), was also the only model that could not significantly beat the Latin query performance present in Condition C (though the raw numbers of Condition D were still greater). Whether a model is able to successfully overcome knowledge conflict and utilize the script advantage seem to be correlated. Furthermore, whether a model is able to uphold performance with RAG inclusion is also an indicator of whether script advantage will remain under the same RAG conditions. 
 
@@ -310,13 +314,13 @@ While prompt construction and priming methodology are detailed in Appendix~\ref{
 \label{app:queries}
 
 Table~\ref{tab:queries-main} lists all 60 Tulu legal-complaint sentences
-used in this study, with their gold LIST primary and secondary
+used in this study, with their human chosen LIST primary and secondary
 categories, English gloss, and Romanized-Tulu form. Table~\ref{tab:queries-script}
 gives the corresponding Kannada script form.
 
 \setlength{\tabcolsep}{3pt}
 \begin{longtable}{p{0.025\textwidth} p{0.115\textwidth} p{0.115\textwidth} p{0.30\textwidth} p{0.30\textwidth}}
-\caption{Full 60-sentence query set: gold LIST categories, English gloss, and Romanized Tulu.}
+\caption{Full 60-sentence query set: human chosen LIST categories, English gloss, and Romanized Tulu.}
 \label{tab:queries-main} \\
 \toprule
 \textbf{ID} & \textbf{Primary} & \textbf{Secondary} & \textbf{English Gloss} & \textbf{Romanized Tulu} \\
@@ -726,7 +730,7 @@ Do NOT invent new category names or use terms from the passages.
 
 To ground the template above in an actual assembled call rather than
 placeholders, this is the complete, real prompt for Condition E\_full
-(Kannada script, full priming, no RAG) on query~1 (gold label: Housing) --
+(Kannada script, full priming, no RAG) on query~1 (human chosen label: Housing) --
 static prefix (Appendix~\ref{app:prompt-prefix}) followed by the full-tier
 Kannada priming block (built from the real glossary in
 Appendix~\ref{app:glossary}) and situation block, exactly as sent to the
@@ -762,17 +766,17 @@ No translation available. Use the vocabulary guide above and any words you recog
 \section{Representative RAG Reasoning-Trace Examples}
 \label{app:rag-examples}
 
-\noindent\textbf{Methodological note.} Retrieved passages for the
-examples below \emph{were} preserved alongside model output, and each
-example here has been cross-checked directly against the retrieved
-passage text. This lets us label mechanism with confidence rather than
-by inference from the reasoning trace alone: an example is labeled
-\textbf{fact substitution} only where the specific content in the
-reasoning trace was verified present in a retrieved passage, and
-\textbf{confabulation} only where it was verified absent from the query,
-all three retrieved passages, and the static prompt (Appendix~\ref{app:prompt}).
-Full case identifiers (CNR, court, date) for every court case named below
-are listed in Appendix~\ref{app:cases}.
+% \noindent\textbf{Methodological note.} Retrieved passages for the
+% examples below \emph{were} preserved alongside model output, and each
+% example here has been cross-checked directly against the retrieved
+% passage text. This lets us label mechanism with confidence rather than
+% by inference from the reasoning trace alone: an example is labeled
+% \textbf{fact substitution} only where the specific content in the
+% reasoning trace was verified present in a retrieved passage, and
+% \textbf{confabulation} only where it was verified absent from the query,
+% all three retrieved passages, and the static prompt (Appendix~\ref{app:prompt}).
+% Full case identifiers (CNR, court, date) for every court case named below
+% are listed in Appendix~\ref{app:cases}.
 
 \subsection{Fact Substitution}
 \label{app:factsub}
@@ -780,7 +784,8 @@ are listed in Appendix~\ref{app:cases}.
 \begin{quote}
 \textbf{Model:} Llama3 \quad \textbf{Condition:} B (Romanized Tulu, no priming, RAG) \\
 \textbf{Query (gloss):} ``Someone cut down trees on my property without permission'' \\
-\textbf{Gold label:} Land/Property \quad \textbf{Predicted:} Consumer/Money/Debt \\
+\textbf{Human chosen label:} Land/Property \\
+\quad \textbf{Predicted:} Consumer/Money/Debt \\
 \textbf{Reasoning trace:} ``The situation appears to be related to a
 financial issue, specifically a debt or payment problem, given the
 mention of insufficient funds and a check being returned.'' \\
@@ -796,17 +801,16 @@ directly into the reasoning in place of the query's actual content.
 \begin{quote}
 \textbf{Model:} Sarvam \quad \textbf{Condition:} C-sparse (Romanized Tulu, sparse priming, RAG) \\
 \textbf{Query (gloss):} ``My roommate moved out and left me to pay all the rent'' \\
-\textbf{Gold label:} Housing \quad \textbf{Predicted:} Courts/Legal-System \\
+\textbf{Human chosen label:} Housing \\
+\quad \textbf{Predicted:} Courts/Legal-System \\
 \textbf{Reasoning trace:} ``The person is actively involved in a legal
 process, mentioning filing a document, producing evidence (WhatsApp
 screenshots), and undergoing a court procedure (fingerprinting).'' \\
 \textbf{Verification:} The first retrieved passage
 (\textit{Amith Ramachandra v.\ Shantha}) contains both details verbatim:
 {\kannadafont ವಾಟ್ಸಾಪ್ ಸಂದೇಶಗಳ ಸ್ಕ್ರೀನ್ ಶಾಟ್} (WhatsApp message
-screenshots) and {\kannadafont ಬೆರಳಚ್ಚು ಮಾಡಲಾಯಿತು} (a fingerprint
-impression was taken). Nothing resembling either detail appears in the
-query, which is a roommate/rent dispute with no evidentiary or
-court-procedural content at all.
+screenshots), and ಬೆರಳಚ್ಚು (typing, which the model misunderstood as fingerprinting).  Nothing resembling either detail appears in the
+query (a roommate/rent dispute).
 \end{quote}
 
 
@@ -816,7 +820,8 @@ court-procedural content at all.
 \begin{quote}
 \textbf{Model:} Llama3 \quad \textbf{Condition:} D-full (Kannada script, full priming, RAG) \\
 \textbf{Query (gloss):} ``The people next door make so much noise I cannot sleep at night'' \\
-\textbf{Gold label:} Housing \quad \textbf{Predicted:} Courts/Legal-System \\
+\textbf{Human chosen label:} Housing \\
+\quad \textbf{Predicted:} Courts/Legal-System \\
 \textbf{Reasoning trace:} ``The situation involves threats and demands,
 which suggests that legal action may be involved or necessary to resolve
 the issue.'' \\
@@ -824,22 +829,23 @@ the issue.'' \\
 equivalents {\kannadafont ಬೆದರಿಕೆ} / {\kannadafont ಬೇಡಿಕೆ}) appear in the
 query or in any of the three retrieved passages (\textit{Amith
 Ramachandra v.\ Shantha}; \textit{Sadashiva Shetty v.\ Vijaya Bank};
-\textit{State v.\ Sudhakar Pai}). The reasoning invents a threat scenario
-with no antecedent anywhere in the available context.
+\textit{State v.\ Sudhakar Pai}) (though threats appear in the \textit{Amith
+Ramachandra v.\ Shantha} text in a seperate chunk) . The reasoning invents a threat scenario
+with no basis anywhere in the available context.
 \end{quote}
 
 \begin{quote}
 \textbf{Model:} Llama3 \quad \textbf{Condition:} F (Kannada script, no priming, RAG) \\
 \textbf{Query (gloss):} ``My neighbor's dog bit my child while we were walking'' \\
-\textbf{Gold label:} Torts/Individuals \quad \textbf{Predicted:} Estates/Wills \\
-\textbf{Reasoning trace:} ``The situation involves eviction and family
+\textbf{Human chosen label:} Torts/Individuals \quad \textbf{Predicted:} Estates/Wills \\
+\textbf{Reasoning trace:} ``The situation involves eviction and family \\
 members, which suggests an issue related to property or inheritance.'' \\
 \textbf{Verification:} No eviction-related term
 ({\kannadafont ಖಾಲಿ}, {\kannadafont ಉಚ್ಚಾಟನೆ}) appears in the query or in
 any of the three retrieved passages (\textit{Nikitha A.\ v.\ Santhosh
 Ghatke}; \textit{Akkamma v.\ Ramesh Patil}; \textit{Dr.\ Alfred Aranha
 v.\ Sahel Peter Aranha}). ``Eviction'' is introduced with no basis in
-either source.
+either source, though family members are brought up in both \textit{Nikitha A.\ v.\ Santhosh Ghatke} and \textit{Akkamma v.\ Ramesh Patil}.
 \end{quote}
 
 \subsection{RAG Content and Correct Classification Aligning}
@@ -848,20 +854,22 @@ either source.
 \begin{quote}
 \textbf{Model:} Sarvam \quad \textbf{Condition:} F (Kannada script, no priming, RAG) \\
 \textbf{Query (gloss):} ``My neighbor's dog bit my child while we were walking'' \\
-\textbf{Gold label:} Torts/Individuals \quad \textbf{Predicted:} Torts/Individuals \\
+\textbf{Human chosen label:} Torts/Individuals \\
+\quad \textbf{Predicted:} Torts/Individuals \\
 \textbf{Reasoning trace:} ``This is a personal injury case caused by another person's (or their animal's) negligence or action, which falls under the Torts/Individuals category.'' \\
-\textbf{Verification:} The retrieved passage (\textit{Nikitha A.\ v.\ Santhosh Ghatke}, similarity 0.916) is genuinely on-topic Torts/Individuals content. Notably, Llama3 confabulates on this same query under the same condition (see above), predicting Estates/Wills with reasoning citing ``eviction and family members'' - illustrating that retrieval relevance alone does not guarantee correct use of it.
+\textbf{Verification:} The retrieved passage (\textit{Nikitha A.\ v.\ Santhosh Ghatke}, similarity 0.916) is actually on track with Torts/Individuals content. Llama3 confabulates on this same query under the same condition (see above), predicting Estates/Wills with reasoning citing ``eviction and family members''. The relevance of a retrieved passage does not ensure accurate classification.
 \end{quote}
 
 \begin{quote}
 \textbf{Model:} Hex-1 \quad \textbf{Condition:} A (English gloss, RAG) \\
 \textbf{Query (gloss):} ``After my father passed away my family took the land that was meant to be given to me'' \\
-\textbf{Gold label:} Estates/Wills \quad \textbf{Predicted:} Estates/Wills \\
+\textbf{Human chosen label:} Estates/Wills\\
+\quad \textbf{Predicted:} Estates/Wills \\
 \textbf{Reasoning trace:} ``The situation involves inheritance disputes
 after a family member's death.'' \\
 \textbf{Verification:} The retrieved passage (\textit{Gagan B.S.\ v.\
 Shivamurthy T.}, similarity 0.824) is itself an ancestral-property
-inheritance-share dispute between siblings ({\kannadafont ಪಿತ್ರಾಜರ್ಿತ
+inheritance-share dispute ({\kannadafont ಪಿತ್ರಾಜರ್ಿತ
 ಆಸ್ತಿ}, ``ancestral property''). Retrieval and classification align
 correctly here as well.
 \end{quote}
@@ -872,21 +880,14 @@ correctly here as well.
 \begin{quote}
 \textbf{Model:} Sarvam \quad \textbf{Condition:} D-full (Kannada script, full priming, RAG) \\
 \textbf{Query (gloss):} ``They ended our agreement before the time we decided'' \\
-\textbf{Gold label:} Consumer/Money/Debt \quad \textbf{Predicted:} Land/Property \\
+\textbf{Human chosen label:} Consumer/Money/Debt\\ 
+\quad \textbf{Predicted:} Land/Property \\
 \textbf{Reasoning trace (translated):} ``This situation involves a
 contract dispute related to property rights or control. This is more of
 a property and contract dispute than a landlord-tenant relationship.'' \\
 \textbf{Verification:} The retrieved passage (\textit{Sridhar P.\ v.\
-Ramesh}, similarity 0.911) is a genuinely on-topic financial/debt
-dispute, the same case cited in \S\ref{subsec:rag-collapse} as a real, relevant cheque-bounce
-matter. Despite retrieval surfacing directly relevant material, the model
-still produced an unrelated category. This same pattern, \textit{Sridhar
-P.\ v.\ Ramesh} retrieved as the top passage for a genuinely debt-related
-query, followed by a Land/Property or Estates/Wills misclassification -
-recurred across at least five debt-related queries in this batch (ids 10,
-11, 13, 27, 30), suggesting the ``two debt-related queries'' figure cited
-in \S\ref{subsec:rag-collapse} is likely an undercount and should be revisited against the
-fuller query set.
+Ramesh}, similarity 0.911) is an on-topic financial/debt
+dispute, though financial matters are discussed briefly. Despite having retrieved directly relevant material, the model still produced an unrelated category.
 \end{quote}
 
 \section{Full Condition-Level Results}
@@ -1009,7 +1010,7 @@ Hex-1  & 41.7>16.7**  & 45.0>18.3**  & 60.0>25.0*** & 38.3>16.7*     & 41.7>11.7
 Sarvam & 48.3>33.3 (ns) & 46.7>30.0 (ns) & 66.7>40.0** & 53.3>28.3**  & 55.0>31.7*     & 60.0>45.0 (ns) \\
 \bottomrule
 \end{tabular}
-\caption{Kannada-script vs. Romanized-script comprehension (Hits@1, \%) across all six priming/RAG tiers, per model ($n=60$/condition). Values shown as Kannada\% $>$ Romanized\%. Fisher's exact test, same methodology as Table~\ref{tab:significance-summary}. Computed post-hoc from condition-level results in Table~\ref{tab:rag-results}; no new model calls were made. $^*p<.05$, $^{**}p<.01$, $^{***}p<.001$.}
+\caption{Kannada-script vs. Romanized-script comprehension (Hits@1, \%) across all six priming/RAG tiers, per model ($n=60$/condition). Values shown as Kannada\% $>$ Romanized\%. Fisher's exact test, same methodology as Table~\ref{tab:significance-summary}. Computed from condition-level results in Table~\ref{tab:rag-results}; no new model calls were made. $^*p<.05$, $^{**}p<.01$, $^{***}p<.001$.}
 \label{tab:kannada-romanized}
 \end{table*}
 
